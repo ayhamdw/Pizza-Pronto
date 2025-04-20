@@ -6,6 +6,7 @@ import Loader from "./Loader";
 function AppLayout() {
   const navigation = useNavigation();
   const isLoading = "loading" === navigation.state;
+  // const isLoading = true;
 
   return (
     <div className="gap- grid h-screen grid-rows-[auto_1fr_auto]">
