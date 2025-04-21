@@ -1,15 +1,28 @@
 // Test ID: IIDSAT
+import { useFetcher, useLoaderData } from "react-router-dom";
 
-import { useLoaderData, useNavigation } from "react-router-dom";
+import OrderItem from "./OrderItem";
+
 import { getOrder } from "../../services/apiRestaurant";
 import {
   calcMinutesLeft,
   formatCurrency,
   formatDate,
 } from "../../utils/helpers";
-import OrderItem from "../order/OrderItem";
+import { useEffect } from "react";
+// import UpdateOrder from "./UpdateOrder";
+
 function Order() {
   const order = useLoaderData();
+  const fetcher = useFetcher();
+
+  useEffect(
+    function () {
+      if (!fetcher.data && fetcher.state === "idle") fetcher.load("/menu");
+    },
+    [fetcher],
+  );
+
   const {
     id,
     status,
@@ -19,10 +32,8 @@ function Order() {
     estimatedDelivery,
     cart,
   } = order;
-  const deliveryIn = calcMinutesLeft(estimatedDelivery);
 
-  const navigation = useNavigation();
-  const isSubmitting = navigation.state === "submitting";
+  const deliveryIn = calcMinutesLeft(estimatedDelivery);
 
   return (
     <div className="space-y-8 px-4 py-6">
@@ -31,11 +42,11 @@ function Order() {
 
         <div className="space-x-2">
           {priority && (
-            <span className="rounded-full bg-red-500 px-3 py-1 text-sm font-semibold text-red-50 uppercase">
+            <span className="rounded-full bg-red-500 px-3 py-1 text-sm font-semibold tracking-wide text-red-50 uppercase">
               Priority
             </span>
           )}
-          <span className="rounded-full bg-green-500 px-3 py-1 text-sm font-semibold text-green-50 uppercase">
+          <span className="rounded-full bg-green-500 px-3 py-1 text-sm font-semibold tracking-wide text-green-50 uppercase">
             {status} order
           </span>
         </div>
@@ -52,9 +63,17 @@ function Order() {
         </p>
       </div>
 
-      <ul className="divide-y divide-stone-200 border-t border-b">
+      <ul className="dive-stone-200 divide-y border-t border-b">
         {cart.map((item) => (
-          <OrderItem item={item} key={item.pizzaId} />
+          <OrderItem
+            item={item}
+            key={item.pizzaId}
+            isLoadingIngredients={fetcher.state === "loading"}
+            ingredients={
+              fetcher?.data?.find((el) => el.id === item.pizzaId)
+                ?.ingredients ?? []
+            }
+          />
         ))}
       </ul>
 
@@ -63,7 +82,7 @@ function Order() {
           Price pizza: {formatCurrency(orderPrice)}
         </p>
         {priority && (
-          <p className="text-stone-600">
+          <p className="text-sm font-medium text-stone-600">
             Price priority: {formatCurrency(priorityPrice)}
           </p>
         )}
@@ -71,6 +90,8 @@ function Order() {
           To pay on delivery: {formatCurrency(orderPrice + priorityPrice)}
         </p>
       </div>
+
+      {/* {!priority && <UpdateOrder order={order} />} */}
     </div>
   );
 }

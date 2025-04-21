@@ -1,7 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getAddress } from "../../services/apiGeocoding";
-import { action } from "../order/CreateOrder";
-import { act } from "react";
 function getPosition() {
   return new Promise(function (resolve, reject) {
     navigator.geolocation.getCurrentPosition(resolve, reject);
