@@ -1,8 +1,12 @@
-// Test ID: IIDSAT
 import { useFetcher, useLoaderData } from "react-router-dom";
-
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  FaMotorcycle,
+  FaClock,
+  FaPizzaSlice,
+  FaMoneyBillWave,
+} from "react-icons/fa";
 import OrderItem from "./OrderItem";
-
 import { getOrder } from "../../services/apiRestaurant";
 import {
   calcMinutesLeft,
@@ -10,18 +14,14 @@ import {
   formatDate,
 } from "../../utils/helpers";
 import { useEffect } from "react";
-// import UpdateOrder from "./UpdateOrder";
 
 function Order() {
   const order = useLoaderData();
   const fetcher = useFetcher();
 
-  useEffect(
-    function () {
-      if (!fetcher.data && fetcher.state === "idle") fetcher.load("/menu");
-    },
-    [fetcher],
-  );
+  useEffect(() => {
+    if (!fetcher.data && fetcher.state === "idle") fetcher.load("/menu");
+  }, [fetcher]);
 
   const {
     id,
@@ -34,65 +34,144 @@ function Order() {
   } = order;
 
   const deliveryIn = calcMinutesLeft(estimatedDelivery);
+  const totalPrice = orderPrice + priorityPrice;
 
   return (
-    <div className="space-y-8 px-4 py-6">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-xl font-semibold">Order #{id} status</h2>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8"
+    >
+      <motion.div
+        className="mb-8 flex flex-wrap items-center justify-between gap-4"
+        initial={{ y: -20 }}
+        animate={{ y: 0 }}
+      >
+        <motion.h2
+          className="flex items-center gap-2 text-2xl font-bold text-stone-800"
+          whileHover={{ scale: 1.02 }}
+        >
+          <FaPizzaSlice className="text-red-500" />
+          Order #{id}
+          <FaPizzaSlice className="text-amber-500" />
+        </motion.h2>
 
-        <div className="space-x-2">
+        <div className="flex gap-2">
           {priority && (
-            <span className="rounded-full bg-red-500 px-3 py-1 text-sm font-semibold tracking-wide text-red-50 uppercase">
-              Priority
-            </span>
+            <motion.span
+              whileHover={{ scale: 1.05 }}
+              className="flex items-center gap-1 rounded-full bg-gradient-to-r from-red-500 to-red-600 px-4 py-1 text-sm font-bold text-white"
+            >
+              <FaClock className="text-white" /> PRIORITY
+            </motion.span>
           )}
-          <span className="rounded-full bg-green-500 px-3 py-1 text-sm font-semibold tracking-wide text-green-50 uppercase">
-            {status} order
-          </span>
+          <motion.span
+            whileHover={{ scale: 1.05 }}
+            className="flex items-center gap-1 rounded-full bg-gradient-to-r from-green-500 to-green-600 px-4 py-1 text-sm font-bold text-white"
+          >
+            <FaMotorcycle className="text-white" /> {status.toUpperCase()}
+          </motion.span>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="flex flex-wrap items-center justify-between gap-2 bg-stone-200 px-6 py-5">
-        <p className="font-medium">
-          {deliveryIn >= 0
-            ? `Only ${calcMinutesLeft(estimatedDelivery)} minutes left 😃`
-            : "Order should have arrived"}
-        </p>
-        <p className="text-xs text-stone-500">
-          (Estimated delivery: {formatDate(estimatedDelivery)})
-        </p>
-      </div>
-
-      <ul className="dive-stone-200 divide-y border-t border-b">
-        {cart.map((item) => (
-          <OrderItem
-            item={item}
-            key={item.pizzaId}
-            isLoadingIngredients={fetcher.state === "loading"}
-            ingredients={
-              fetcher?.data?.find((el) => el.id === item.pizzaId)
-                ?.ingredients ?? []
-            }
-          />
-        ))}
-      </ul>
-
-      <div className="space-y-2 bg-stone-200 px-6 py-5">
-        <p className="text-sm font-medium text-stone-600">
-          Price pizza: {formatCurrency(orderPrice)}
-        </p>
-        {priority && (
-          <p className="text-sm font-medium text-stone-600">
-            Price priority: {formatCurrency(priorityPrice)}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.1 }}
+        className={`mb-8 rounded-xl border-l-4 p-6 shadow-sm ${
+          deliveryIn >= 0
+            ? "border-green-400 bg-gradient-to-r from-amber-50 to-green-50"
+            : "border-red-400 bg-gradient-to-r from-amber-50 to-red-50"
+        }`}
+      >
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <div
+              className={`rounded-full p-3 ${
+                deliveryIn >= 0
+                  ? "bg-green-100 text-green-600"
+                  : "bg-red-100 text-red-600"
+              }`}
+            >
+              <FaMotorcycle className="text-xl" />
+            </div>
+            <p className="text-lg font-medium text-stone-800">
+              {deliveryIn >= 0
+                ? `Only ${calcMinutesLeft(estimatedDelivery)} minutes left! 😃`
+                : "Order should have arrived"}
+            </p>
+          </div>
+          <p className="text-sm text-stone-600 sm:text-right">
+            Estimated delivery: {formatDate(estimatedDelivery)}
           </p>
-        )}
-        <p className="font-bold">
-          To pay on delivery: {formatCurrency(orderPrice + priorityPrice)}
-        </p>
-      </div>
+        </div>
+      </motion.div>
 
-      {/* {!priority && <UpdateOrder order={order} />} */}
-    </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="mb-8 overflow-hidden rounded-xl border border-stone-100 bg-white shadow-sm"
+      >
+        <h3 className="border-b border-amber-100 bg-amber-50 px-6 py-4 text-lg font-semibold text-stone-800">
+          Your Pizza Order
+        </h3>
+        <ul className="divide-y divide-stone-100">
+          <AnimatePresence>
+            {cart.map((item) => (
+              <motion.li
+                key={item.pizzaId}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0 }}
+              >
+                <OrderItem
+                  item={item}
+                  isLoadingIngredients={fetcher.state === "loading"}
+                  ingredients={
+                    fetcher?.data?.find((el) => el.id === item.pizzaId)
+                      ?.ingredients ?? []
+                  }
+                />
+              </motion.li>
+            ))}
+          </AnimatePresence>
+        </ul>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        className="rounded-xl border border-amber-100 bg-gradient-to-r from-amber-50 to-red-50 p-6 shadow-sm"
+      >
+        <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-stone-800">
+          <FaMoneyBillWave className="text-amber-600" />
+          Order Summary
+        </h3>
+        <div className="space-y-3">
+          <div className="flex justify-between">
+            <span className="text-stone-600">Pizza Total:</span>
+            <span className="font-medium">{formatCurrency(orderPrice)}</span>
+          </div>
+          {priority && (
+            <div className="flex justify-between">
+              <span className="text-stone-600">Priority Fee:</span>
+              <span className="font-medium">
+                {formatCurrency(priorityPrice)}
+              </span>
+            </div>
+          )}
+          <div className="flex justify-between border-t border-stone-200 pt-3">
+            <span className="font-bold text-stone-800">Total:</span>
+            <span className="text-lg font-bold text-red-600">
+              {formatCurrency(totalPrice)}
+            </span>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }
 

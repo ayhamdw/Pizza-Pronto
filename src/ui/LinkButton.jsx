@@ -13,7 +13,7 @@ function LinkButton({ children, to }) {
     );
   return (
     <Link to={to} className={className}>
-      &larr; {children}
+      {children}
     </Link>
   );
 }
