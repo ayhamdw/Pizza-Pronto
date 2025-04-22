@@ -20,7 +20,7 @@ function Button({ children, to, type = "primary", onClick }) {
 
     secondary:
       base +
-      " bg-white/10 border border-stone-300 text-stone-300 backdrop-blur-md hover:bg-white/20 hover:text-white hover:scale-105 focus:ring-stone-200 px-5 py-3 md:px-6 md:py-4",
+      " bg-yellow/10 border border-stone-300 text-stone-500 backdrop-blur-md hover:bg-black/20 hover:text-black/50 hover:scale-105 focus:ring-stone-200 px-5 py-3 md:px-6 md:py-4",
   };
 
   const content = <span className={styles[type]}>{children}</span>;

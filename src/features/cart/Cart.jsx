@@ -99,11 +99,7 @@ function Cart() {
           >
             Order Now <FaPizzaSlice className="inline" />
           </Button>
-          <Button
-            type="secondary"
-            onClick={handleClear}
-            className="flex items-center gap-2 border-red-300 bg-white text-red-600 hover:bg-red-50"
-          >
+          <Button type="secondary" onClick={handleClear}>
             <FaTrash className="inline" /> Clear Cart
           </Button>
         </div>
