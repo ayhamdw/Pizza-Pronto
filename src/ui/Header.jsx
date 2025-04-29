@@ -25,7 +25,7 @@ function Header() {
             🍕
           </motion.span>
           <span className="bg-gradient-to-r from-white to-amber-100 bg-clip-text text-transparent">
-            Fast React Pizza Co.
+            Pizza Pronto
           </span>
           <motion.span
             animate={{ scale: [1, 1.2, 1] }}
