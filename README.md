@@ -17,7 +17,7 @@ Welcome to **Pizza Pronto**, the ultimate web kitchen where every slice is serve
 🚀 **Quick Start – Fire Up the Oven**
 ```bash
 # Clone the repo
-git clone https://github.com/your-username/pizza-pronto.git
+git clone https://github.com/ayhamdw/pizza-pronto.git
 
 # Install ingredients (dependencies)
 npm install
